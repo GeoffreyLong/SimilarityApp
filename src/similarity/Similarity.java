@@ -21,6 +21,7 @@ public class Similarity {
 	List<Camera> allCameras = new LinkedList<Camera>();
 	
 	public Similarity(String filepath){
+		// Will error out with insufficient memory on relatively low (~100) photos
 		File directory = new File(filepath);
         File[] listOfFiles = directory.listFiles();
         Mat[] allMats = new Mat[listOfFiles.length];
@@ -91,7 +92,9 @@ public class Similarity {
 	}
 	
 	private Camera initializeCamera(Mat allMats, String string){
-		return new Camera(string, allMats, FeatureDetector.STAR, DescriptorExtractor.SIFT);
+		// STAR, SIFT, FLANN might be best
+		// ORB, BRIEF, BRUTEFORCE probably the fastest / least memory
+		return new Camera(string, allMats, FeatureDetector.ORB, DescriptorExtractor.BRIEF);
 	}
 	
 	private MatOfDMatch getMatches(Camera c1, Camera c2){
@@ -99,7 +102,7 @@ public class Similarity {
 		// so if I pass a parameter decide the detector might have to send same to matching
 		// Easy if solver is instantiated with class variable of feature or whatever	
 		MatOfDMatch matches = new MatOfDMatch();
-		DescriptorMatcher matcher = DescriptorMatcher.create(DescriptorMatcher.FLANNBASED);
+		DescriptorMatcher matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE);
 		
 		//c1 is query
 		//c2 is train
