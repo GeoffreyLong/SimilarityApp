@@ -11,6 +11,8 @@ import similarity.Similarity;
 
 
 public class Main {	
+	public static final boolean test = false;
+	
 	public static void main(String[] args){
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 				
@@ -19,7 +21,8 @@ public class Main {
 	}
 	
 	private static void getSimilarity(String[] args) {
-		String photoDir = "C:\\Users\\Geoff\\workspace\\SimilarityApp\\src\\Test_Images";
+		// String photoDir = "C:\\Users\\Geoff\\workspace\\SimilarityApp\\src\\Test_Images";
+		String photoDir = "C:\\Users\\Geoff\\workspace\\SimilarityApp\\src\\Test_Images_2";
 		
 		Similarity similarity = new Similarity(photoDir);
 	}
