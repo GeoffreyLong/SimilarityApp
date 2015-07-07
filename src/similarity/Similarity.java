@@ -1,6 +1,7 @@
 package similarity;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -58,25 +59,40 @@ public class Similarity {
 	// Need to pipe out a value from this
 	// Currently tested using Star detector, Sift extractor, Flann matcher
 	//		Note that this won't give very good results in blurry images, need an edge detector as well
+	// Will want to create a sort of mapping
+	//		For instance if the correlation between 0_5 and 0_4 is high 
+	//		and the correlation between 0_4 and 0_3 is high
+	//		then there might be correlation between 0_5 and 0_3 even if the value is a bit high
+	//		Need some sort of conditional probability things
+	//		Will have to get the probabilities from some sort of run analysis or something
 	private void featureSimilarity(MatOfDMatch matches, Camera c1, Camera c2){
-		int numberOfMatches = 0;
-		int numberOfTotalMatches = 0;
 		float smallestMatch = Float.MAX_VALUE;
+		
+		int numberOfMatches = 5;
+		float[] smallestValues = new float[numberOfMatches];
+		
 		for (DMatch match : matches.toArray()){
-			if (match.distance < Float.MAX_VALUE){
-				//TODO see if I can get the match location in each image (i.e. pixel location)
-				// System.out.println(match.imgIdx + " " + match.trainIdx + " " + match.queryIdx);
-				numberOfTotalMatches ++;
-			}
 			// Arbitrarily set value
-			if (match.distance < 100){
-				numberOfMatches ++;
+			java.util.Arrays.sort(smallestValues);
+			if (smallestValues[0] == 0){
+				smallestValues[0] = match.distance;
 			}
+			else if (match.distance < smallestValues[numberOfMatches - 1]){
+				smallestValues[numberOfMatches - 1] = match.distance;
+			}
+
+			
 			if (match.distance < smallestMatch){
 				smallestMatch = match.distance;
 			}
-			//TODO perhaps a sort of average over 10 windows thing?
 		}
+		
+		float aggregate = 0;
+		for (int i = 0; i < numberOfMatches; i++){
+			aggregate += smallestValues[i];
+		}
+		
+		aggregate /= numberOfMatches;
 		
 		// File string splitting and printing
 		String[] c1Tokes = c1.fileName.split(Pattern.quote(System.getProperty("file.separator")));
@@ -84,11 +100,8 @@ public class Similarity {
 		
 		System.out.println(c1Tokes[c1Tokes.length-1].split(Pattern.quote("."))[0] + " " 
 						+ c2Tokes[c2Tokes.length-1].split(Pattern.quote("."))[0] 
-						+ " " + numberOfTotalMatches + " " + numberOfMatches + " " + smallestMatch);
-		
-		// numberOfTotalMatches: Doesn't really say much about similarity... could be used to scale the other two values
-		// numberOfMatches: This is good, usually when this is 0 the images have no correlation
-		// smallestMatch: The smaller the more likely similar
+						+ " " + aggregate + " " + smallestMatch);
+		// I think that <110 for the average is decent
 	}
 	
 	private Camera initializeCamera(Mat allMats, String string){
