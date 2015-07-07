@@ -19,21 +19,14 @@ public class Main {
 	}
 	
 	private static void getSimilarity(String[] args) {
-		String photoDir = "C:\\Users\\Geoff\\workspace\\Computer_Vision\\src\\Test_Images";
+		String photoDir = "C:\\Users\\Geoff\\workspace\\SimilarityApp\\src\\Test_Images";
 		
-		Sequence sequence = null;
-		if (photoDir != ""){
-			System.out.println(photoDir);
-			sequence = new Sequence(photoDir, null);
-			System.out.println("Instantiated Cameras");
-		}
-
-		Similarity similarity = new Similarity(sequence);
+		Similarity similarity = new Similarity(photoDir);
 	}
 
 	public static void estimateMotion(String[] args){
-		String photoDir = "C:\\Users\\Geoff\\workspace\\Computer_Vision\\src\\TestSetOne\\image_151_251";
-		String k = "C:\\Users\\Geoff\\workspace\\Computer_Vision\\src\\TestSetOne\\K.txt";
+		String photoDir = "C:\\Users\\Geoff\\workspace\\SimilarityApp\\src\\TestSetOne\\image_151_251";
+		String k = "C:\\Users\\Geoff\\workspace\\SimilarityApp\\src\\TestSetOne\\K.txt";
 		
 		Sequence sequence = null;
 		

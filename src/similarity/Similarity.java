@@ -1,24 +1,57 @@
 package similarity;
 
+import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Pattern;
 
+import org.opencv.core.Mat;
 import org.opencv.core.MatOfDMatch;
 import org.opencv.features2d.DMatch;
+import org.opencv.features2d.DescriptorExtractor;
+import org.opencv.features2d.DescriptorMatcher;
+import org.opencv.features2d.FeatureDetector;
+import org.opencv.highgui.Highgui;
 
 import main.Camera;
 import motion.Sequence;
 
 public class Similarity {
-	public Similarity(Sequence sequence){
-		Camera[] allCameras = sequence.getAllCameras();
-		for (int i = 1; i < sequence.getNumberOfCameras(); i++){
-			Camera c1 = allCameras[i-1];
-			Camera c2 = allCameras[i];
-			MatOfDMatch matches = sequence.getMatches(c1, c2);
-			
-			featureSimilarity(matches, c1, c2);
-			//TODO Besides seeing feature matches can also get contrast similarities, perhaps texture too?
+	private static final int NUM_CAMERAS = 0;
+	List<Camera> allCameras = new LinkedList<Camera>();
+	
+	public Similarity(String filepath){
+		File directory = new File(filepath);
+        File[] listOfFiles = directory.listFiles();
+        Mat[] allMats = new Mat[listOfFiles.length];
+
+        
+        // Initialize first
+        allMats[0] = Highgui.imread(listOfFiles[0].getAbsolutePath());
+		allCameras.add(initializeCamera(allMats[0], listOfFiles[0].getAbsolutePath()));
+		
+        // Iterate through comparing each file to one another
+		// Creating the camera takes a while so that is done lazily
+        for (int i = 0; i < listOfFiles.length; i++){
+			try{
+				// f.getAbsolutePath(); or f.getName();
+				allMats[i] = Highgui.imread(listOfFiles[i].getAbsolutePath());
+				allCameras.add(initializeCamera(allMats[i], listOfFiles[i].getAbsolutePath()));
+
+				for (int j = 1; j < i; j++){
+					Camera c1 = allCameras.get(i);
+					Camera c2 = allCameras.get(j);
+					MatOfDMatch matches = getMatches(c1, c2);
+					
+					featureSimilarity(matches, c1, c2);
+					//TODO Besides seeing feature matches can also get contrast similarities, perhaps texture too?
+				}
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
 		}
+		
 	}
 	
 	// Need to pipe out a value from this
@@ -55,5 +88,22 @@ public class Similarity {
 		// numberOfTotalMatches: Doesn't really say much about similarity... could be used to scale the other two values
 		// numberOfMatches: This is good, usually when this is 0 the images have no correlation
 		// smallestMatch: The smaller the more likely similar
+	}
+	
+	private Camera initializeCamera(Mat allMats, String string){
+		return new Camera(string, allMats, FeatureDetector.STAR, DescriptorExtractor.SIFT);
+	}
+	
+	private MatOfDMatch getMatches(Camera c1, Camera c2){
+		// Probably a native function in the OpenCV source... might be paired with the alg
+		// so if I pass a parameter decide the detector might have to send same to matching
+		// Easy if solver is instantiated with class variable of feature or whatever	
+		MatOfDMatch matches = new MatOfDMatch();
+		DescriptorMatcher matcher = DescriptorMatcher.create(DescriptorMatcher.FLANNBASED);
+		
+		//c1 is query
+		//c2 is train
+		matcher.match(c1.getDescriptors(), c2.getDescriptors(), matches);
+		return matches;
 	}
 }
