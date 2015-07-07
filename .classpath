@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/OpenCv2.4"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="C:/Users/Geoff/Documents/jfreechart-1.0.19/lib/jcommon-1.0.23.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Geoff/Documents/jfreechart-1.0.19/lib/jfreechart-1.0.19.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Geoff/Documents/ejml-v0.27-libs/EJML-core-0.27.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Geoff/Documents/ejml-v0.27-libs/EJML-dense64-0.27.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Geoff/Documents/ejml-v0.27-libs/EJML-denseC64-0.27.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Geoff/Documents/ejml-v0.27-libs/EJML-equation-0.27.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Geoff/Documents/ejml-v0.27-libs/EJML-simple-0.27.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
